@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bible Verse Jar</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 40px;
+    }
+    h1 {
+      margin-bottom: 40px;
+      font-size: 1.8rem;
+      color: #333;
+    }
+    .mood-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .mood-box {
+      padding: 20px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #fff;
+      transition: transform 0.2s;
+    }
+    .mood-box:hover {
+      transform: scale(1.05);
+    }
+    .angry { background: #ff4d6d; }
+    .thankful { background: #ffb6c1; color: #333; }
+    .happy { background: #ffd700; color: #333; }
+    .anxious { background: #556b2f; }
+    .lonely { background: #87cefa; }
+    .sad { background: #87ceeb; }
+  </style>
+</head>
+<body>
+  <h1>What is your mood today, my love?</h1>
+  <div class="mood-container">
+    <button class="mood-box angry" onclick="showVerse('angry')">Angry</button>
+    <button class="mood-box thankful" onclick="showVerse('thankful')">Thankful</button>
+    <button class="mood-box happy" onclick="showVerse('happy')">Happy</button>
+    <button class="mood-box anxious" onclick="showVerse('anxious')">Anxious</button>
+    <button class="mood-box lonely" onclick="showVerse('lonely')">Lonely</button>
+    <button class="mood-box sad" onclick="showVerse('sad')">Sad</button>
+  </div>
+
+  <script>
+    const verses = {
+      angry: [
+        "Proverbs 15:1 - A gentle answer turns away wrath, but a harsh word stirs up anger.",
+        "Ephesians 4:26 - In your anger do not sin: Do not let the sun go down while you are still angry.",
+        "James 1:19 - Everyone should be quick to listen, slow to speak and slow to become angry."
+      ],
+      thankful: [
+        "1 Thessalonians 5:18 - Give thanks in all circumstances; for this is God’s will for you in Christ Jesus.",
+        "Colossians 3:17 - And whatever you do, whether in word or deed, do it all in the name of the Lord Jesus, giving thanks to God the Father through him.",
+        "Psalm 107:1 - Give thanks to the Lord, for he is good; his love endures forever."
+      ],
+      happy: [
+        "Philippians 4:4 - Rejoice in the Lord always. I will say it again: Rejoice!",
+        "Psalm 118:24 - The Lord has done it this very day; let us rejoice today and be glad.",
+        "Proverbs 17:22 - A cheerful heart is good medicine, but a crushed spirit dries up the bones."
+      ],
+      anxious: [
+        "Philippians 4:6 - Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.",
+        "1 Peter 5:7 - Cast all your anxiety on him because he cares for you.",
+        "Matthew 6:34 - Therefore do not worry about tomorrow, for tomorrow will worry about itself."
+      ],
+      lonely: [
+        "Deuteronomy 31:6 - Be strong and courageous. Do not be afraid or terrified, for the Lord your God goes with you; he will never leave you nor forsake you.",
+        "Psalm 23:4 - Even though I walk through the darkest valley, I will fear no evil, for you are with me.",
+        "Isaiah 41:10 - So do not fear, for I am with you; do not be dismayed, for I am your God."
+      ],
+      sad: [
+        "Matthew 5:4 - Blessed are those who mourn, for they will be comforted.",
+        "Psalm 34:18 - The Lord is close to the brokenhearted and saves those who are crushed in spirit.",
+        "Revelation 21:4 - He will wipe every tear from their eyes. There will be no more death or mourning or crying or pain."
+      ]
+    };
+
+    function getRemainingVerses(mood) {
+      let used = JSON.parse(localStorage.getItem(`used_${mood}`)) || [];
+      let available = verses[mood].filter((_, i) => !used.includes(i));
+      if (available.length === 0) {
+        used = [];
+        localStorage.setItem(`used_${mood}`, JSON.stringify(used));
+        available = [...verses[mood]];
+      }
+      return { available, used };
+    }
+
+    function showVerse(mood) {
+      let { available, used } = getRemainingVerses(mood);
+      let randomIndex = Math.floor(Math.random() * available.length);
+      let verse = available[randomIndex];
+      let verseIndex = verses[mood].indexOf(verse);
+      used.push(verseIndex);
+      localStorage.setItem(`used_${mood}`, JSON.stringify(used));
+      alert(verse);
+    }
+  </script>
+</body>
+</html>
