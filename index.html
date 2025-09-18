@@ -1,412 +1,422 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>What's your mood, my love?</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>For My Ever Soft Girl</title>
 
-<!-- Google Fonts: Playfair Display (display substitute for Lancelot) + Courier Prime -->
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts (Courier Prime available; Lancelot requested as user asked) -->
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Lancelot is not a standard Google font name — included per request; browsers will fallback if missing -->
+  <link href="https://fonts.googleapis.com/css2?family=Lancelot&display=swap" rel="stylesheet">
 
-<style>
-  :root{
-    --bg: #ffeec3;
-    --btn-bg: #726152;
-    /* mood colors (from your list; angry adjusted to full hex) */
-    --angry: #ff9247;
-    --thankful: #ffcafe;
-    --happy: #514c06;
-    --anxious: #327a33;
-    --sad: #aafff0;
-    --lonely: #5c66a6;
-    --radius: 14px;
-  }
+  <style>
+    :root{
+      --bg: #ffeec3;
+      --title-font: "Lancelot", "Playfair Display", serif;
+      --btn-shadow: #726152;
+      --title-size: clamp(22px, 4.5vw, 40px);
+      --max-width: 720px; /* interface max width */
+    }
 
-  /* Reset */
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{
-    font-family: "Courier Prime", monospace;
-    background: var(--bg);
-    color: #211;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    padding: 36px;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-  }
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      color:#2c231d;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
 
-  /* container */
-  .wrap{
-    width: min(1100px, 96%);
-    display:flex;
-    gap:28px;
-    align-items:flex-start;
-    justify-content:space-between;
-  }
+    .wrap{
+      width: min(var(--max-width), 94vw);
+      margin: 22px auto;
+      padding: 28px 18px 60px;
+      box-sizing: border-box;
+      display:flex;
+      flex-direction:column;
+      align-items: center;
+    }
 
-  .panel{
-    flex: 1 1 380px;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-  }
+    header h1{
+      margin: 6px 0 26px;
+      font-family: var(--title-font);
+      font-size: var(--title-size);
+      font-weight: 400;
+      color:#231813;
+      text-align:center;
+      letter-spacing: .6px;
+    }
 
-  /* Title font: attempt Lancelot name first, fallback to Playfair Display */
-  .title{
-    font-family: "Lancelot", "Playfair Display", serif;
-    font-size:44px;
-    color:#221;
-    letter-spacing:-0.02em;
-  }
+    /* grid with two columns, side-by-side always; on very narrow screens it still keeps two columns but scales */
+    .mood-grid{
+      width:100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px 34px;
+      justify-items: center;
+      align-items: start;
+    }
 
-  .subtitle{
-    font-family: "Courier Prime", monospace;
-    color:#3b2f2a;
-    font-size:14px;
-  }
+    /* Each pill container has a darker bottom shadow strip to mimic provided design */
+    .pill {
+      width: 86%;
+      max-width: 320px;
+      min-width: 180px;
+      border-radius: 18px;
+      padding: 18px 24px;
+      box-sizing: border-box;
+      font-family: "Courier Prime", monospace;
+      font-size: clamp(16px, 2.2vw, 20px);
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+      transition: transform .14s ease, box-shadow .14s ease;
+      color: #2f1f17;
+      box-shadow: 0 8px 0 var(--btn-shadow); /* bottom strip */
+      -webkit-tap-highlight-color: transparent;
+    }
 
-  .credit{ font-size:12px; color:#3b2f2a; margin-top:6px; }
+    .pill:active{ transform: translateY(6px); box-shadow: 0 2px 0 var(--btn-shadow); }
 
-  /* Mood grid */
-  .mood-grid{
-    flex: 1 1 480px;
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-    align-content:start;
-    width: min(560px, 52%);
-  }
+    /* individual mood colors (foreground box) - matches your requested hexes */
+    .angry { background: #ff9675; }
+    .thankful { background: #ffb1fe; }
+    .happy { background: #f9f181; }
+    .anxious { background: #99f19a; }
+    .sad { background: #cefff6; }
+    .lonely { background: #a7caff; }
 
-  .mood-btn{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding: 20px;
-    border-radius: 22px;
-    background: var(--btn-bg);
-    cursor:pointer;
-    border: none;
-    min-height:78px;
-    transition: transform .12s ease, box-shadow .12s ease;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
-    font-family: "Courier Prime", monospace;
-    font-size:20px;
-    font-weight:700;
-    text-transform:lowercase;
-    letter-spacing:0.02em;
-  }
-  .mood-btn:active{ transform: translateY(2px) }
+    /* subtle rounded rectangular look of your design shadow */
+    .pill-inner{
+      display:block;
+      border-radius: 14px;
+      padding: 12px 0;
+      background: transparent;
+      width:100%;
+    }
 
-  /* text color per mood (as you specified) */
-  .mood-btn[data-mood="angry"]{ color: var(--angry); }
-  .mood-btn[data-mood="thankful"]{ color: var(--thankful); }
-  .mood-btn[data-mood="happy"]{ color: var(--happy); }
-  .mood-btn[data-mood="anxious"]{ color: var(--anxious); }
-  .mood-btn[data-mood="sad"]{ color: var(--sad); }
-  .mood-btn[data-mood="lonely"]{ color: var(--lonely); }
+    /* modal */
+    .overlay{
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.28);
+      z-index: 40;
+      padding: 24px;
+      box-sizing: border-box;
+    }
 
-  .info{
-    margin-top:8px;
-    font-size:13px;
-    color:#3b2f2a;
-    background: rgba(0,0,0,0.02);
-    padding:10px 12px;
-    border-radius:8px;
-    max-width:520px;
-  }
+    .overlay.show { display:flex; }
 
-  /* Modal overlay & box */
-  .overlay{
-    position: fixed;
-    inset: 0;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    background: rgba(0,0,0,0.34);
-    z-index: 1200;
-    padding: 28px;
-  }
-  .overlay.show{ display:flex; }
+    .modal{
+      width: min(720px, 96vw);
+      max-width: 720px;
+      border-radius: 10px;
+      padding: 28px 26px;
+      box-sizing: border-box;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      color: #231813;
+      position: relative;
+    }
 
-  .modal{
-    width: min(760px, 96%);
-    max-width:760px;
-    border-radius: 10px;
-    padding: 28px;
-    box-shadow: 0 18px 48px rgba(0,0,0,0.22);
-    color: #111;
-  }
+    .verse-ref{
+      font-weight: 700;
+      text-align:center;
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+    .verse-text{
+      text-align:center;
+      line-height:1.45;
+      font-size: 16px;
+      white-space: pre-wrap;
+    }
 
-  .verse-ref{
-    text-align:center;
-    font-weight:800;
-    margin-bottom:12px;
-    font-size:18px;
-  }
+    .modal-footer{
+      margin-top: 22px;
+      text-align:center;
+    }
 
-  .verse-text{
-    text-align:center;
-    font-size:18px;
-    line-height:1.5;
-    margin-bottom:18px;
-  }
+    .close-btn{
+      display:inline-block;
+      padding: 10px 22px;
+      border-radius: 22px;
+      background: rgba(0,0,0,0.06);
+      cursor:pointer;
+      font-weight:600;
+      font-family: "Courier Prime", monospace;
+      user-select:none;
+    }
 
-  .modal-footer{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    margin-top:6px;
-  }
+    /* small info text */
+    .hint{
+      margin-top:16px;
+      font-size:13px;
+      color:#3a2c24;
+      opacity:0.9;
+      text-align:center;
+    }
 
-  .close-btn{
-    background: rgba(0,0,0,0.06);
-    border:none;
-    padding:10px 22px;
-    border-radius:40px;
-    font-family: "Courier Prime", monospace;
-    font-weight:700;
-    cursor:pointer;
-    font-size:16px;
-  }
-
-  /* Responsive: on small screens maximize width and stack vertically,
-     ensuring vertical scrolling only.
-  */
-  @media (max-width:880px){
-    body{ padding:18px; align-items:flex-start; }
-    .wrap{ flex-direction:column; gap:18px; width:100%; align-items:stretch; }
-    .mood-grid{ grid-template-columns: 1fr; width:100%; }
-    .title{ font-size:36px; text-align:center; }
-    .panel{ align-items:center; text-align:center; }
-    .info{ width:100%; }
-  }
-</style>
+    /* Responsive tweaks: keep two columns but allow vertical scroll only; ensure no horiz overflow */
+    @media (max-width:480px){
+      .mood-grid{
+        gap: 18px 18px;
+      }
+      .pill { width: 96%; min-width: 0; }
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap" role="main" aria-labelledby="pageTitle">
-    <div class="panel">
-      <h1 id="pageTitle" class="title">What's your mood, my love?</h1>
-      <div class="subtitle">Tap one mood and receive a comforting Bible verse.</div>
-      <div class="info" aria-hidden="false">
-        Click any mood. The site remembers which verses you've seen across visits and will only repeat after the pool is exhausted.
-      </div>
-      <div class="credit">Minimal · Verses are KJV excerpts</div>
-    </div>
+  <div class="wrap" role="main">
+    <header>
+      <h1>What's your mood, my love?</h1>
+    </header>
 
-    <div class="mood-grid" aria-label="Mood choices">
-      <button class="mood-btn" data-mood="angry" aria-haspopup="dialog" aria-controls="verseModal">angry</button>
-      <button class="mood-btn" data-mood="thankful" aria-haspopup="dialog" aria-controls="verseModal">thankful</button>
-      <button class="mood-btn" data-mood="happy" aria-haspopup="dialog" aria-controls="verseModal">happy</button>
-      <button class="mood-btn" data-mood="anxious" aria-haspopup="dialog" aria-controls="verseModal">anxious</button>
-      <button class="mood-btn" data-mood="sad" aria-haspopup="dialog" aria-controls="verseModal">sad</button>
-      <button class="mood-btn" data-mood="lonely" aria-haspopup="dialog" aria-controls="verseModal">lonely</button>
-    </div>
+    <main>
+      <div class="mood-grid" id="moodGrid" aria-label="Choose your mood">
+        <div class="pill angry" data-mood="angry" role="button" tabindex="0"><span class="pill-inner">angry</span></div>
+        <div class="pill anxious" data-mood="anxious" role="button" tabindex="0"><span class="pill-inner">anxious</span></div>
+        <div class="pill thankful" data-mood="thankful" role="button" tabindex="0"><span class="pill-inner">thankful</span></div>
+        <div class="pill sad" data-mood="sad" role="button" tabindex="0"><span class="pill-inner">sad</span></div>
+        <div class="pill happy" data-mood="happy" role="button" tabindex="0"><span class="pill-inner">happy</span></div>
+        <div class="pill lonely" data-mood="lonely" role="button" tabindex="0"><span class="pill-inner">lonely</span></div>
+      </div>
+
+      <p class="hint">Click a mood. A Bible verse will encourage you—randomized and remembered across visits until the pool is used, then it resets automatically.</p>
+    </main>
   </div>
 
-  <!-- Modal -->
-  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="verseRef" aria-describedby="verseText">
-    <div class="modal" id="verseModal">
-      <div id="verseRef" class="verse-ref" aria-live="polite"></div>
-      <div id="verseText" class="verse-text"></div>
+  <!-- Modal overlay -->
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="verseRef">
+      <div class="verse-ref" id="verseRef"></div>
+      <div class="verse-text" id="verseText"></div>
       <div class="modal-footer">
-        <button class="close-btn" id="closeBtn">Okaaay</button>
+        <div class="close-btn" id="closeBtn">Okaaay</div>
       </div>
     </div>
   </div>
 
-<script>
-/* ======== Verses: at least 10 per mood ========
-   KJV short excerpts. Replace with other translations if you like.
-*/
-const VERSES = {
-  angry: [
-    {r:"Proverbs 15:1", t:"A soft answer turneth away wrath: but grievous words stir up anger."},
-    {r:"James 1:19-20", t:"Be swift to hear, slow to speak, slow to wrath: for the wrath of man worketh not the righteousness of God."},
-    {r:"Ephesians 4:26-27", t:"Be ye angry, and sin not: let not the sun go down upon your wrath."},
-    {r:"Psalm 37:8", t:"Cease from anger, and forsake wrath: fret not thyself in any wise to do evil."},
-    {r:"Romans 12:19", t:"Vengeance is mine; I will repay, saith the Lord."},
-    {r:"Colossians 3:8", t:"But now ye also put off all these; anger, wrath, malice, blasphemy, filthy communication out of your mouth."},
-    {r:"Proverbs 14:29", t:"He that is slow to wrath is of great understanding: but he that is hasty of spirit exalteth folly."},
-    {r:"Matthew 5:22", t:"Whosoever is angry with his brother without a cause shall be in danger of the judgment."},
-    {r:"Galatians 5:22-23", t:"The fruit of the Spirit is... temperance: against such there is no law."},
-    {r:"Psalm 4:4", t:"Commune with your own heart upon your bed, and be still. Selah."}
-  ],
-  thankful: [
-    {r:"1 Thessalonians 5:16-18", t:"Rejoice evermore. Pray without ceasing. In every thing give thanks: for this is the will of God."},
-    {r:"Psalm 107:1", t:"O give thanks unto the LORD; for he is good: for his mercy endureth for ever."},
-    {r:"Colossians 3:15-17", t:"Be ye thankful... And whatsoever ye do in word or deed, do all in the name of the Lord Jesus, giving thanks to God and the Father by him."},
-    {r:"Psalm 100:4", t:"Enter into his gates with thanksgiving, and into his courts with praise: be thankful unto him."},
-    {r:"Philippians 4:6", t:"Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God."},
-    {r:"Psalm 118:1", t:"O give thanks unto the LORD; for he is good: because his mercy endureth for ever."},
-    {r:"Hebrews 12:28", t:"Acknowledge with thanksgiving to God, which hath given us an unchangeable kingdom."},
-    {r:"Psalm 136:1", t:"O give thanks unto the Lord; for he is good: for his mercy endureth for ever."},
-    {r:"2 Corinthians 9:15", t:"Thanks be unto God for his unspeakable gift."},
-    {r:"Psalm 92:1-2", t:"It is a good thing to give thanks unto the LORD, and to sing praises unto thy name, O most High."}
-  ],
-  happy: [
-    {r:"Philippians 4:4", t:"Rejoice in the Lord always: and again I say, Rejoice."},
-    {r:"Psalm 16:11", t:"In thy presence is fulness of joy; at thy right hand there are pleasures for evermore."},
-    {r:"Nehemiah 8:10", t:"The joy of the Lord is your strength."},
-    {r:"Psalm 118:24", t:"This is the day which the LORD hath made; we will rejoice and be glad in it."},
-    {r:"Romans 15:13", t:"Now the God of hope fill you with all joy and peace in believing."},
-    {r:"John 15:11", t:"These things I have spoken unto you, that my joy might remain in you."},
-    {r:"Galatians 5:22", t:"The fruit of the Spirit is... joy."},
-    {r:"Psalm 30:5", t:"Weeping may endure for a night, but joy cometh in the morning."},
-    {r:"1 Peter 1:8-9", t:"Though ye have not seen him, yet believing, ye rejoice with joy unspeakable and full of glory."},
-    {r:"Isaiah 61:10", t:"I will greatly rejoice in the LORD, my soul shall be joyful in my God."}
-  ],
-  anxious: [
-    {r:"Matthew 6:34", t:"Therefore do not worry about tomorrow: for tomorrow will worry about itself."},
-    {r:"Philippians 4:6-7", t:"Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God."},
-    {r:"1 Peter 5:7", t:"Casting all your care upon him; for he careth for you."},
-    {r:"Psalm 55:22", t:"Cast thy burden upon the LORD, and he shall sustain thee."},
-    {r:"Isaiah 41:10", t:"Fear thou not; for I am with thee: be not dismayed; for I am thy God."},
-    {r:"Psalm 94:19", t:"In the multitude of my thoughts within me thy comforts delight my soul."},
-    {r:"John 14:27", t:"My peace I give unto you: not as the world giveth, give I unto you."},
-    {r:"Psalm 23:4", t:"Yea, though I walk through the valley... I will fear no evil: for thou art with me."},
-    {r:"Proverbs 12:25", t:"Heaviness in the heart of man maketh it stoop: but a good word maketh it glad."},
-    {r:"Psalm 34:4", t:"I sought the LORD, and he heard me, and delivered me from all my fears."}
-  ],
-  sad: [
-    {r:"Psalm 34:18", t:"The LORD is nigh unto them that are of a broken heart; and saveth such as be of a contrite spirit."},
-    {r:"Matthew 5:4", t:"Blessed are they that mourn: for they shall be comforted."},
-    {r:"Psalm 147:3", t:"He healeth the broken in heart, and bindeth up their wounds."},
-    {r:"John 14:1", t:"Let not your heart be troubled: ye believe in God, believe also in me."},
-    {r:"Revelation 21:4", t:"God shall wipe away all tears from their eyes; and there shall be no more death, neither sorrow."},
-    {r:"Psalm 30:5", t:"Weeping may endure for a night, but joy cometh in the morning."},
-    {r:"Isaiah 41:13", t:"For I the Lord thy God will hold thy right hand ... I will help thee."},
-    {r:"2 Corinthians 1:3-4", t:"God of all comfort; Who comforteth us in all our tribulation..." },
-    {r:"Psalm 42:11", t:"Why art thou cast down, O my soul? hope thou in God."},
-    {r:"Lamentations 3:22-23", t:"It is of the LORD's mercies that we are not consumed, because his compassions fail not."}
-  ],
-  lonely: [
-    {r:"Deuteronomy 31:6", t:"Be strong and of a good courage, fear not... for the LORD thy God, he it is that doth go with thee."},
-    {r:"Hebrews 13:5", t:"I will never leave thee, nor forsake thee."},
-    {r:"Psalm 23:1-4", t:"The LORD is my shepherd; I shall not want... yea, though I walk through the valley... I will fear no evil."},
-    {r:"Matthew 28:20", t:"I am with you always, even unto the end of the world."},
-    {r:"Psalm 68:6", t:"God setteth the solitary in families..." },
-    {r:"Isaiah 41:10", t:"Fear thou not; for I am with thee..." },
-    {r:"Psalm 27:10", t:"When my father and my mother forsake me, then the LORD will take me up."},
-    {r:"Romans 8:38-39", t:"Neither height, nor depth... shall be able to separate us from the love of God."},
-    {r:"1 Peter 5:7", t:"Casting all your care upon him; for he careth for you."},
-    {r:"Psalm 139:7-10", t:"Whither shall I go from thy spirit? or whither shall I flee from thy presence?"}
-  ]
-};
+  <script>
+    /* ----- Verse pools: at least 10 per mood ----- */
+    const VERSES = {
+      angry: [
+        {r:"Ephesians 4:26-27", t:"Be angry and do not sin; do not let the sun go down on your anger, and give no opportunity to the devil."},
+        {r:"James 1:19-20", t:"Know this, my beloved: let every person be quick to hear, slow to speak, slow to anger; for the anger of man does not produce the righteousness of God."},
+        {r:"Proverbs 15:1", t:"A soft answer turns away wrath, but a harsh word stirs up anger."},
+        {r:"Psalm 37:8", t:"Refrain from anger, and forsake wrath! Fret not yourself; it leads only to evil."},
+        {r:"Colossians 3:8", t:"But now you must put them all away: anger, wrath, malice, slander, and obscene talk from your mouth."},
+        {r:"Proverbs 19:11", t:"Good sense makes one slow to anger, and it is his glory to overlook an offense."},
+        {r:"Romans 12:17-19", t:"Repay no one evil for evil... If possible, so far as it depends on you, live peaceably with all."},
+        {r:"Matthew 5:9", t:"Blessed are the peacemakers, for they shall be called sons of God."},
+        {r:"Psalm 4:4", t:"Be angry, and do not sin; ponder in your own hearts on your beds, and be silent."},
+        {r:"Proverbs 14:29", t:"Whoever is slow to anger has great understanding, but he who has a hasty temper exalts folly."}
+      ],
+      anxious: [
+        {r:"Matthew 6:34", t:"Therefore do not worry about tomorrow, for tomorrow will worry about itself. Each day has enough trouble of its own."},
+        {r:"Philippians 4:6-7", t:"Do not be anxious about anything, but in everything by prayer and supplication with thanksgiving let your requests be made known to God. The peace of God will guard your hearts and minds."},
+        {r:"1 Peter 5:7", t:"Casting all your anxieties on him, because he cares for you."},
+        {r:"Isaiah 41:10", t:"Fear not, for I am with you; be not dismayed, for I am your God. I will strengthen and help you; I will uphold you with my righteous right hand."},
+        {r:"Psalm 55:22", t:"Cast your burden on the Lord, and he will sustain you; he will never permit the righteous to be moved."},
+        {r:"John 14:27", t:"Peace I leave with you; my peace I give to you. Do not let your hearts be troubled, neither let them be afraid."},
+        {r:"Psalm 34:4", t:"I sought the Lord, and he answered me and delivered me from all my fears."},
+        {r:"Psalm 23:4", t:"Even though I walk through the valley of the shadow of death, I will fear no evil, for you are with me."},
+        {r:"Proverbs 12:25", t:"Anxiety in a man's heart weighs it down, but a good word makes it glad."},
+        {r:"Hebrews 13:6", t:"So we can confidently say, ‘The Lord is my helper; I will not fear; what can man do to me?’"}
+      ],
+      thankful: [
+        {r:"1 Thessalonians 5:18", t:"Give thanks in all circumstances; for this is the will of God in Christ Jesus for you."},
+        {r:"Psalm 100:4", t:"Enter his gates with thanksgiving, and his courts with praise! Give thanks to him; bless his name!"},
+        {r:"Colossians 3:17", t:"And whatever you do, in word or deed, do everything in the name of the Lord Jesus, giving thanks to God the Father through him."},
+        {r:"Psalm 107:1", t:"Oh give thanks to the Lord, for he is good, for his steadfast love endures forever!"},
+        {r:"Psalm 95:2-3", t:"Let us come into his presence with thanksgiving; let us make a joyful noise to him with songs of praise!"}, 
+        {r:"Philippians 4:6", t:"Do not be anxious about anything, but in everything by prayer and supplication with thanksgiving let your requests be made known to God."},
+        {r:"Psalm 118:1", t:"Oh give thanks to the Lord, for he is good; for his steadfast love endures forever!"},
+        {r:"Hebrews 12:28", t:"Let us offer to God acceptable worship, with reverence and awe, for our God is a consuming fire."},
+        {r:"Psalm 136:1", t:"Give thanks to the Lord, for he is good, for his steadfast love endures forever."},
+        {r:"2 Corinthians 9:15", t:"Thanks be to God for his inexpressible gift!"}
+      ],
+      sad: [
+        {r:"Psalm 34:18", t:"The Lord is near to the brokenhearted and saves the crushed in spirit."},
+        {r:"Matthew 5:4", t:"Blessed are those who mourn, for they shall be comforted."},
+        {r:"Psalm 147:3", t:"He heals the brokenhearted and binds up their wounds."},
+        {r:"Revelation 21:4", t:"He will wipe away every tear from their eyes, and death shall be no more."},
+        {r:"John 14:18", t:"I will not leave you as orphans; I will come to you."},
+        {r:"Psalm 30:5", t:"Weeping may tarry for the night, but joy comes with the morning."},
+        {r:"2 Corinthians 1:3-4", t:"God... is the Father of mercies and God of all comfort, who comforts us in all our affliction."},
+        {r:"Isaiah 41:13", t:"I hold you; I am your God. I will help you; I will uphold you with my righteous right hand."},
+        {r:"Psalm 9:9", t:"The Lord is a stronghold for the oppressed, a stronghold in times of trouble."},
+        {r:"Romans 8:38-39", t:"Nothing will separate us from the love of God in Christ Jesus our Lord."}
+      ],
+      happy: [
+        {r:"Psalm 16:11", t:"You make known to me the path of life; in your presence there is fullness of joy; at your right hand are pleasures forevermore."},
+        {r:"Philippians 4:4", t:"Rejoice in the Lord always; again I will say, Rejoice."},
+        {r:"Psalm 118:24", t:"This is the day that the Lord has made; let us rejoice and be glad in it."},
+        {r:"Nehemiah 8:10", t:"The joy of the Lord is your strength."},
+        {r:"Romans 12:12", t:"Rejoice in hope, be patient in tribulation, be constant in prayer."},
+        {r:"Psalm 98:4", t:"Make a joyful noise to the Lord, all the earth; break forth into joyous song and sing praises!"},
+        {r:"John 15:11", t:"These things I have spoken to you, that my joy may be in you, and that your joy may be full."},
+        {r:"1 Thessalonians 5:16-18", t:"Rejoice always, pray without ceasing, give thanks in all circumstances."},
+        {r:"Psalm 126:3", t:"The Lord has done great things for us; we are glad."},
+        {r:"Isaiah 12:3", t:"With joy you will draw water from the wells of salvation."}
+      ],
+      lonely: [
+        {r:"Deuteronomy 31:6", t:"Be strong and courageous. Do not fear or be in dread... for it is the Lord your God who goes with you. He will not leave you or forsake you."},
+        {r:"Hebrews 13:5", t:"I will never leave you nor forsake you."},
+        {r:"Psalm 23:1-4", t:"The Lord is my shepherd; I shall not want... even though I walk through the valley of the shadow of death, I will fear no evil."},
+        {r:"Psalm 68:5-6", t:"Father of the fatherless and protector of widows is God in his holy habitation."},
+        {r:"Isaiah 43:2", t:"When you pass through the waters... I will be with you; and through the rivers, they shall not overwhelm you."},
+        {r:"Matthew 28:20", t:"And behold, I am with you always, to the end of the age."},
+        {r:"Psalm 27:10", t:"When my father and my mother forsake me, then the Lord will take me up."},
+        {r:"John 14:16", t:"I will ask the Father, and he will give you another Helper, to be with you forever."},
+        {r:"Romans 8:38-39", t:"Nothing can separate us from the love of God in Christ Jesus."},
+        {r:"Psalm 139:7-10", t:"Where shall I go from your Spirit? If I ascend to heaven, you are there... your right hand will hold me."}
+      ]
+    };
 
-/* localStorage keys */
-function usedKey(mood){ return 'seen_verses_' + mood; }
-
-/* read seen array for mood */
-function readSeen(mood){
-  try{
-    const raw = localStorage.getItem(usedKey(mood));
-    if(!raw) return [];
-    const parsed = JSON.parse(raw);
-    if(Array.isArray(parsed)) return parsed;
-    return [];
-  } catch(e){
-    return [];
-  }
-}
-
-/* write seen array for mood */
-function writeSeen(mood, arr){
-  try{ localStorage.setItem(usedKey(mood), JSON.stringify(arr)); } catch(e){}
-}
-
-/* get a random remaining index (resets if none left) */
-function pickIndexForMood(mood){
-  const poolLen = VERSES[mood].length;
-  let seen = readSeen(mood);
-  // filter valid seen (in case pool changed)
-  seen = seen.filter(i => Number.isInteger(i) && i >= 0 && i < poolLen);
-  if(seen.length >= poolLen){
-    // pool exhausted -> reset silently
-    seen = [];
-  }
-  // compute remaining indices
-  const remaining = [];
-  for(let i=0;i<poolLen;i++) if(!seen.includes(i)) remaining.push(i);
-  // pick random from remaining
-  const choice = remaining[Math.floor(Math.random() * remaining.length)];
-  // update seen
-  seen.push(choice);
-  writeSeen(mood, seen);
-  return choice;
-}
-
-/* UI wiring */
-const overlay = document.getElementById('overlay');
-const modal = document.getElementById('verseModal');
-const refEl = document.getElementById('verseRef');
-const textEl = document.getElementById('verseText');
-const closeBtn = document.getElementById('closeBtn');
-
-function openModalForMood(mood){
-  const idx = pickIndexForMood(mood);
-  const verse = VERSES[mood][idx];
-
-  // set modal background color to the mood color
-  let bg = getComputedStyle(document.documentElement).getPropertyValue('--' + mood).trim();
-  if(!bg) bg = '#ffffff';
-  modal.style.background = bg;
-  // choose text color depending on brightness for legibility
-  const txtColor = readableTextColor(bg);
-  modal.style.color = txtColor;
-  // verse markup: reference (div, centered & bold) and text (div centered)
-  refEl.innerHTML = `<div style="font-weight:900">${verse.r}</div>`;
-  textEl.innerHTML = `<div>${verse.t}</div>`;
-
-  overlay.classList.add('show');
-  // focus the close button for keyboard users
-  closeBtn.focus();
-}
-
-/* compute white/black readable text depending on background */
-function readableTextColor(bg){
-  // support hex like #rrggbb
-  try{
-    const c = bg.replace('#','').trim();
-    if(c.length === 3){
-      const r = parseInt(c[0]+c[0],16);
-      const g = parseInt(c[1]+c[1],16);
-      const b = parseInt(c[2]+c[2],16);
-      const yiq = (r*299 + g*587 + b*114)/1000;
-      return yiq >= 140 ? '#111' : '#fff';
-    } else if(c.length === 6){
-      const r = parseInt(c.slice(0,2),16);
-      const g = parseInt(c.slice(2,4),16);
-      const b = parseInt(c.slice(4,6),16);
-      const yiq = (r*299 + g*587 + b*114)/1000;
-      return yiq >= 140 ? '#111' : '#fff';
+    /* Utilities for localStorage persistence of used indices */
+    function getUsed(mood){
+      try {
+        const raw = localStorage.getItem('used_'+mood);
+        return raw ? JSON.parse(raw) : [];
+      } catch(e){ return []; }
     }
-  } catch(e){}
-  return '#111';
-}
+    function setUsed(mood, arr){
+      try { localStorage.setItem('used_'+mood, JSON.stringify(arr)); } catch(e){}
+    }
 
-/* click handlers for mood buttons */
-document.querySelectorAll('.mood-btn').forEach(btn=>{
-  btn.addEventListener('click', () => {
-    const mood = btn.dataset.mood;
-    if(!VERSES[mood]) return;
-    openModalForMood(mood);
-  });
-});
+    /* pick random unseen index; if all used, reset and then pick */
+    function pickVerseIndex(mood){
+      const pool = VERSES[mood] || [];
+      if(pool.length === 0) return null;
+      let used = getUsed(mood);
+      // If every index used, reset used
+      if(used.length >= pool.length){
+        used = [];
+        setUsed(mood, used);
+      }
+      // compute set of available indices
+      const available = [];
+      for(let i=0;i<pool.length;i++){
+        if(!used.includes(i)) available.push(i);
+      }
+      // pick random available index
+      const idx = available[Math.floor(Math.random()*available.length)];
+      // add to used
+      used.push(idx);
+      setUsed(mood, used);
+      return idx;
+    }
 
-/* close behaviors */
-closeBtn.addEventListener('click', ()=> overlay.classList.remove('show'));
+    // DOM references
+    const overlay = document.getElementById('overlay');
+    const modal = document.getElementById('modal');
+    const verseRefEl = document.getElementById('verseRef');
+    const verseTextEl = document.getElementById('verseText');
+    const closeBtn = document.getElementById('closeBtn');
 
-// close on overlay click (but not when clicking inside modal)
-overlay.addEventListener('click', (e)=>{
-  if(e.target === overlay) overlay.classList.remove('show');
-});
+    // Mood click handler
+    function openForMood(mood, color){
+      const idx = pickVerseIndex(mood);
+      if(idx === null) return;
+      const verse = VERSES[mood][idx];
+      // fill modal
+      verseRefEl.textContent = verse.r;
+      verseTextEl.textContent = verse.t;
+      // set modal background color same as button color; keep text readable
+      modal.style.background = color;
+      // ensure text color contrasts: if light background, make darker text; else white
+      // simple luminance check:
+      const col = color.replace('#','');
+      const r = parseInt(col.substring(0,2),16), g = parseInt(col.substring(2,4),16), b = parseInt(col.substring(4,6),16);
+      const luminance = (0.299*r + 0.587*g + 0.114*b)/255;
+      if(luminance > 0.78) {
+        // very light: darken text a bit
+        modal.style.color = '#231813';
+        closeBtn.style.background = 'rgba(0,0,0,0.06)';
+      } else {
+        modal.style.color = '#231813';
+        closeBtn.style.background = 'rgba(0,0,0,0.06)';
+      }
 
-// close on Esc
-document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Escape') overlay.classList.remove('show');
-});
-</script>
+      // show overlay
+      overlay.classList.add('show');
+      overlay.setAttribute('aria-hidden','false');
+      // trap focus to close button for accessibility (simple)
+      closeBtn.focus();
+    }
+
+    // close modal
+    function closeModal(){
+      overlay.classList.remove('show');
+      overlay.setAttribute('aria-hidden','true');
+    }
+
+    // attach events to pills
+    document.querySelectorAll('.pill').forEach(btn => {
+      // get the mood value and computed background
+      const mood = btn.dataset.mood;
+      btn.addEventListener('click', () => {
+        // computed style to get background-color; convert to hex
+        const style = getComputedStyle(btn);
+        const bg = style.backgroundColor;
+        // convert rgb/rgba to hex
+        const hex = rgbToHex(bg);
+        openForMood(mood, hex);
+      });
+      // support keyboard activation
+      btn.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          btn.click();
+        }
+      });
+    });
+
+    // close button and overlay click handling
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', (e) => {
+      if(e.target === overlay) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') closeModal();
+    });
+
+    /* Helper: convert rgb/rgba string to hex */
+    function rgbToHex(rgb){
+      // rgb(a) format: "rgb(255, 0, 0)" or "rgba(255, 0, 0, 1)"
+      const m = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+      if(!m) return '#ffffff';
+      const r = parseInt(m[1],10).toString(16).padStart(2,'0');
+      const g = parseInt(m[2],10).toString(16).padStart(2,'0');
+      const b = parseInt(m[3],10).toString(16).padStart(2,'0');
+      return '#'+r+g+b;
+    }
+
+    /* Initialize: set the exact hex backgrounds for pills so computed color matches requested hexes.
+       This ensures the modal uses the same hex color as the pill. */
+    (function setPillColors(){
+      const map = {
+        angry:'#ff9675',
+        thankful:'#ffb1fe',
+        happy:'#f9f181',
+        anxious:'#99f19a',
+        sad:'#cefff6',
+        lonely:'#a7caff'
+      };
+      document.querySelectorAll('.pill').forEach(el => {
+        const m = el.dataset.mood;
+        if(map[m]) {
+          el.style.background = map[m];
+        }
+      });
+    })();
+
+  </script>
 </body>
 </html>
