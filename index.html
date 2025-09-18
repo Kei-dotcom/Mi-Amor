@@ -11,13 +11,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Lancelot&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      --bg: #ffeec3;
-      --title-font: "Lancelot", "Playfair Display", serif;
-      --btn-shadow: #726152;
-      --title-size: clamp(22px, 4.5vw, 40px);
-      --max-width: 720px; /* interface max width */
-    }
+    :root {
+  --bg: #ffeec3;
+  --title-font: "Lancelot", "Playfair Display", serif;
+  --btn-shadow: #726152;
+  --title-size: clamp(22px, 4.5vw, 40px);
+  --max-width: 720px;
+
+  /* prevent browser dark mode overrides */
+  color-scheme: only light;
+}
 
     html,body{
       height:100%;
