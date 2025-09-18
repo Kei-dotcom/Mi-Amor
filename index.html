@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mood Bible Verses</title>
+  <title>For My Ever Soft Girl</title>
   <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Lancelot&display=swap" rel="stylesheet">
   <style>
     body {
@@ -79,6 +79,16 @@
       gap: 20px;
     }
 
+    .verse-reference {
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .verse-text {
+      text-align: center;
+    }
+
     .modal-close {
       background: #f4f4f4;
       color: white;
@@ -116,7 +126,7 @@
 
   <div class="modal" id="verseModal">
     <div class="modal-content" id="modalContent">
-      <p id="verseText"></p>
+      <div id="verseText"></div>
       <button class="modal-close" id="closeModal">Okaaay</button>
     </div>
   </div>
@@ -124,26 +134,81 @@
   <script>
     const moodVerses = {
       angry: [
-        "Proverbs 15:1<br>A gentle answer turns away wrath, but a harsh word stirs up anger.",
-        "James 1:19-20<br>My dear brother and sisters, take note of this: Everyone should be quick to listen, slow to speak and slow to become angry, because human anger does not produce the righteousness that God desires.",
-        "Ephesians 4:26<br>In your anger do not sin.",
-        "Proverbs 16:32<br>Better a patient person than a warrior.",
-        "Colossians 3:8<br>Rid yourselves of anger, rage, malice.",
-        "Proverbs 19:11<br>A person’s wisdom yields patience.",
-        "Psalm 37:8<br>Refrain from anger and turn from wrath.",
-        "Ecclesiastes 7:9<br>Do not be quickly provoked in your spirit.",
-        "Romans 12:19<br>Do not take revenge, my dear friends.",
-        "Matthew 5:22<br>Anyone who is angry will be subject to judgment."
+        "<div class='verse-reference'>Proverbs 15:1</div><div class='verse-text'>A gentle answer turns away wrath, but a harsh word stirs up anger.</div>",
+        "<div class='verse-reference'>James 1:19-20</div><div class='verse-text'>My dear brothers and sisters, take note of this: Everyone should be quick to listen, slow to speak and slow to become angry, because human anger does not produce the righteousness that God desires.</div>",
+        "<div class='verse-reference'>Ephesians 4:26</div><div class='verse-text'>In your anger do not sin.</div>",
+        "<div class='verse-reference'>Proverbs 16:32</div><div class='verse-text'>Better a patient person than a warrior.</div>",
+        "<div class='verse-reference'>Colossians 3:8</div><div class='verse-text'>Rid yourselves of anger, rage, malice.</div>",
+        "<div class='verse-reference'>Proverbs 19:11</div><div class='verse-text'>A person’s wisdom yields patience.</div>",
+        "<div class='verse-reference'>Psalm 37:8</div><div class='verse-text'>Refrain from anger and turn from wrath.</div>",
+        "<div class='verse-reference'>Ecclesiastes 7:9</div><div class='verse-text'>Do not be quickly provoked in your spirit.</div>",
+        "<div class='verse-reference'>Romans 12:19</div><div class='verse-text'>Do not take revenge, my dear friends.</div>",
+        "<div class='verse-reference'>Matthew 5:22</div><div class='verse-text'>Anyone who is angry will be subject to judgment.</div>"
       ],
-      thankful: [
-        "1 Thessalonians 5:18<br>Give thanks in all circumstances.",
-        "Psalm 107:1<br>Give thanks to the Lord, for He is good.",
-        "Colossians 3:17<br>Do everything in the name of the Lord, giving thanks.",
-        "Philippians 4:6<br>With thanksgiving, present your requests to God.",
-        "Psalm 100:4<br>Enter his gates with thanksgiving.",
-        "Psalm 95:2<br>Let us come before him with thanksgiving.",
-        "Ephesians 5:20<br>Always giving thanks to God.",
-        "Psalm 136:1<br>His love endures forever.",
+      anxious: [
+        "<div class='verse-reference'>Matthew 6:34</div><div class='verse-text'>Do not worry about tomorrow.</div>",
+        "<div class='verse-reference'>Philippians 4:6</div><div class='verse-text'>Do not be anxious about anything.</div>",
+        "<div class='verse-reference'>1 Peter 5:7</div><div class='verse-text'>Cast all your anxiety on Him.</div>",
+        "<div class='verse-reference'>John 14:27</div><div class='verse-text'>Do not let your hearts be troubled.</div>",
+        "<div class='verse-reference'>Isaiah 41:10</div><div class='verse-text'>Do not fear, for I am with you.</div>",
+        "<div class='verse-reference'>Psalm 94:19</div><div class='verse-text'>Your consolation brought me joy.</div>",
+        "<div class='verse-reference'>Psalm 55:22</div><div class='verse-text'>Cast your cares on the Lord.</div>",
+        "<div class='verse-reference'>Proverbs 12:25</div><div class='verse-text'>Anxiety weighs down the heart.</div>",
+        "<div class='verse-reference'>Matthew 11:28</div><div class='verse-text'>Come to me, all who are weary.</div>",
+        "<div class='verse-reference'>Isaiah 26:3</div><div class='verse-text'>You will keep in perfect peace those who trust in you.</div>"
+      ]
+    };
+
+    const modal = document.getElementById('verseModal');
+    const modalContent = document.getElementById('modalContent');
+    const verseText = document.getElementById('verseText');
+    const closeModal = document.getElementById('closeModal');
+
+    // Load seen verses from localStorage or initialize
+    let seenVerses = JSON.parse(localStorage.getItem('seenVerses')) || {};
+
+    function getRandomVerse(mood) {
+      if (!seenVerses[mood]) seenVerses[mood] = [];
+
+      const verses = moodVerses[mood];
+      const unseen = verses.filter((v, i) => !seenVerses[mood].includes(i));
+
+      if (unseen.length === 0) {
+        seenVerses[mood] = [];
+        return getRandomVerse(mood);
+      }
+
+      const randomIndex = Math.floor(Math.random() * unseen.length);
+      const verseIndex = verses.indexOf(unseen[randomIndex]);
+      seenVerses[mood].push(verseIndex);
+      localStorage.setItem('seenVerses', JSON.stringify(seenVerses));
+
+      return verses[verseIndex];
+    }
+
+    document.querySelectorAll('.mood-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const mood = button.getAttribute('data-mood');
+        const verse = getRandomVerse(mood);
+        verseText.innerHTML = verse;
+        modalContent.style.backgroundColor = button.style.backgroundColor;
+        modal.style.display = 'flex';
+      });
+    });
+
+    closeModal.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
+
         "Hebrews 12:28<br>Let us be thankful and worship God.",
         "2 Corinthians 9:11<br>Your generosity will result in thanksgiving to God."
       ],
